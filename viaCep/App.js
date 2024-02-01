@@ -1,4 +1,3 @@
-import { StatusBar } from 'react-native';
 
 //Import Styled
 import { ContainerApp } from './styles';
@@ -25,7 +24,6 @@ export default function App() {
 
   return (
   <ContainerApp>
-      <StatusBar style="auto" />
       <Header/>   
       <Home/>
     </ContainerApp> 

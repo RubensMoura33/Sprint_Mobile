@@ -6,4 +6,5 @@ export const FieldContent = styled.View`
 
     /* define o valor da largura como o valor da props.fieldWidth */
     width: ${props => `${props.fieldWidth}%`};
+    gap:10px
 `

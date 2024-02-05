@@ -5,7 +5,7 @@ import { ContainerForm, ScrollForm, ViewUF } from "./style";
 import { BoxInput } from "../../components/BoxInput";
 
 //Hooks React
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 //Biblioteca Axios
 import axios from "axios";
@@ -15,25 +15,18 @@ export function Home() {
     //hooks -- states
      const [endereco, setEndereco] = useState({})
      const [cep, setCep] = useState ('')
-
-    //hooks -- effect
-        //useEffect chamando o metodo getCep()
-    useEffect(() => {
-        if(cep) {
-        getCep()
-    }
-    else 
-    {
-        clearCep()
-    }
-    },[cep])
+     const [estado, setEstado] = useState()
 
     //metodo que faz a chamada na api
     async function getCep() {
             try {
-                //chamada da API
-                const promise = await axios.get(`https://viacep.com.br/ws/${cep}/json/`)
-                 setEndereco(promise.data)
+                //chamada da API viaCep
+                const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`)
+            setEndereco(response.data)
+            
+            //chamada da Api IBGE para trazer o estado somente
+            const estado = await axios.get (`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${response.data.uf}`)
+            setEstado(estado.data.nome);
             } 
             catch (error) {
             }
@@ -41,6 +34,7 @@ export function Home() {
 
     function clearCep(){
         setEndereco({})
+        setEstado()
     }
     return(
 
@@ -58,7 +52,8 @@ export function Home() {
                         maxLength={9}
                         editable={true}
                         fieldValue={cep}
-                        onChangeText={c => setCep(c)}                       
+                        onChangeText={c => setCep(c)}
+                        onBlur={cep ? getCep : clearCep}                       
                         />
 
                     <BoxInput 
@@ -84,7 +79,7 @@ export function Home() {
                         textLabel="Estado"
                         placeholder="Estado..."
                         fieldWidth= "70"
-                        fieldValue={endereco.uf}
+                        fieldValue={estado}
                         />
                     <BoxInput 
                         textLabel="UF"
